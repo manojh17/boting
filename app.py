@@ -34,7 +34,14 @@ def run_flask():
     app.run(host="0.0.0.0", port=5304)
 
 # --------------------------- PYROGRAM BOT ------------------------
-bot = Client("episode_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+bot = Client(
+    "episode_bot",            # session name
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN,
+    workdir="/tmp"            # Render free-tier writable folder
+)
+
 
 try:
     with open(CACHE_FILE, "r") as f:
