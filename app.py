@@ -15,7 +15,7 @@ PRIVATE_CHANNEL_ID = -1002949423579
 CACHE_FILE = "episode_cache.json"
 AUTO_DELETE_SECONDS = 3600
 SELF_PING_INTERVAL = 600
-SELF_URL = "https://your-render-app.onrender.com"  # Replace with your Render URL
+SELF_URL = "https://boting-77os.onrender.com"  # Replace with your Render URL
 
 # ---------------------------- LOGGING ----------------------------
 logging.basicConfig(
@@ -31,7 +31,7 @@ def home():
     return "Bot is alive! 🚀"
 
 def run_flask():
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5304)
 
 # --------------------------- PYROGRAM BOT ------------------------
 bot = Client("episode_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
