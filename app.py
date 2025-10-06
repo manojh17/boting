@@ -123,13 +123,14 @@ async def keep_alive():
 # --------------------------- RUN EVERYTHING ----------------------
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.create_task(bot.start())
-    loop.create_task(keep_alive())
+    # Start bot and self-ping tasks
+    loop.create_task(bot.start())  # ✅ coroutine
+    loop.create_task(keep_alive())  # ✅ coroutine
     logging.info("Bot started and self-ping task running...")
 
-    # Flask in a separate thread
+    # Run Flask in separate thread so it doesn't block asyncio loop
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.start()
 
-    # Keep asyncio loop running
+    # Keep asyncio loop alive
     loop.run_forever()
