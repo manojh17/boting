@@ -1,10 +1,11 @@
 import asyncio
 import json
 import logging
-import requests
+import threading
 from flask import Flask
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+import aiohttp  # async HTTP client
 
 # ----------------------------- CONFIG -----------------------------
 API_ID = 12854871
@@ -12,9 +13,9 @@ API_HASH = "22243531d2908439e7935c1d8c5966e1"
 BOT_TOKEN = "8314102530:AAEFPObpBXhha3WG97B39XMuTKltemx0T-U"
 PRIVATE_CHANNEL_ID = -1002949423579
 CACHE_FILE = "episode_cache.json"
-AUTO_DELETE_SECONDS = 3600  # 1 hour
-SELF_PING_INTERVAL = 600    # seconds (10 min)
-SELF_URL = "https://boting-77os.onrender.com"  # <-- update with your Render URL
+AUTO_DELETE_SECONDS = 3600
+SELF_PING_INTERVAL = 600
+SELF_URL = "https://your-render-app.onrender.com"  # Replace with your Render URL
 
 # ---------------------------- LOGGING ----------------------------
 logging.basicConfig(
@@ -28,6 +29,9 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     return "Bot is alive! 🚀"
+
+def run_flask():
+    app.run(host="0.0.0.0", port=5000)
 
 # --------------------------- PYROGRAM BOT ------------------------
 bot = Client("episode_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
@@ -107,13 +111,14 @@ async def handle_episode_button(client, callback_query):
 
 # --------------------------- SELF PING ----------------------------
 async def keep_alive():
-    while True:
-        try:
-            requests.get(SELF_URL)
-            logging.info("Pinged self to stay alive.")
-        except Exception as e:
-            logging.warning(f"Self-ping failed: {e}")
-        await asyncio.sleep(SELF_PING_INTERVAL)
+    async with aiohttp.ClientSession() as session:
+        while True:
+            try:
+                async with session.get(SELF_URL) as resp:
+                    logging.info(f"Pinged self, status: {resp.status}")
+            except Exception as e:
+                logging.warning(f"Self-ping failed: {e}")
+            await asyncio.sleep(SELF_PING_INTERVAL)
 
 # --------------------------- RUN EVERYTHING ----------------------
 if __name__ == "__main__":
@@ -121,4 +126,10 @@ if __name__ == "__main__":
     loop.create_task(bot.start())
     loop.create_task(keep_alive())
     logging.info("Bot started and self-ping task running...")
-    app.run(host="0.0.0.0", port=5304)
+
+    # Flask in a separate thread
+    flask_thread = threading.Thread(target=run_flask)
+    flask_thread.start()
+
+    # Keep asyncio loop running
+    loop.run_forever()
