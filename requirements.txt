@@ -2,3 +2,4 @@ Flask
 pyrogram
 tgcrypto
 requests
+aiohttp
