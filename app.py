@@ -121,4 +121,4 @@ if __name__ == "__main__":
     loop.create_task(bot.start())
     loop.create_task(keep_alive())
     logging.info("Bot started and self-ping task running...")
-    app.run(host="0.0.0.0", port=5432)
+    app.run(host="0.0.0.0", port=5304)
