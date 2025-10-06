@@ -14,7 +14,7 @@ PRIVATE_CHANNEL_ID = -1002949423579
 CACHE_FILE = "episode_cache.json"
 AUTO_DELETE_SECONDS = 3600  # 1 hour
 SELF_PING_INTERVAL = 600    # seconds (10 min)
-SELF_URL = "https://your-render-app.onrender.com"  # <-- update with your Render URL
+SELF_URL = "https://boting-77os.onrender.com"  # <-- update with your Render URL
 
 # ---------------------------- LOGGING ----------------------------
 logging.basicConfig(
@@ -121,4 +121,4 @@ if __name__ == "__main__":
     loop.create_task(bot.start())
     loop.create_task(keep_alive())
     logging.info("Bot started and self-ping task running...")
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5432)
