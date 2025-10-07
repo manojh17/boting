@@ -46,7 +46,7 @@ app = Flask(__name__)
 
 # -------------------- CONFIG --------------------
 PORT = int(os.environ.get("PORT", 8080))
-SELF_URL = f"http://127.0.0.1:{PORT}"  # Change to your deployed URL when hosted
+SELF_URL = f"https://boting-77os.onrender.com"  # Change to your deployed URL when hosted
 
 # -------------------- FLASK ROUTES --------------------
 @app.route('/')
