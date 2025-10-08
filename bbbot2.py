@@ -148,7 +148,7 @@ except FileNotFoundError:
 def save_cache():
     """Save the current episode cache to a JSON file."""
     with open(CACHE_FILE, "w") as f:
-        json.dump(episode_cache, f)
+        json.dump(episode_cache, f, indent=4)
     logging.info("Episode cache saved.")
 
 def build_episode_buttons():
@@ -168,10 +168,21 @@ async def handle_new_episode(client, message):
     if "S9EP" in ep_text.upper():
         # Extract episode name
         ep_name = next((word for word in ep_text.split() if "S9EP" in word.upper()), None)
-        if ep_name and ep_name not in episode_cache:
-            episode_cache[ep_name] = message.id  # Pyrogram v2+
+        if ep_name:
+            # If episode already exists, append the new message ID
+            if ep_name in episode_cache:
+                if isinstance(episode_cache[ep_name], list):
+                    if message.id not in episode_cache[ep_name]:
+                        episode_cache[ep_name].append(message.id)
+                else:
+                    # Convert single value to list
+                    episode_cache[ep_name] = [episode_cache[ep_name], message.id]
+            else:
+                # First message for this episode
+                episode_cache[ep_name] = [message.id]
+
             save_cache()
-            logging.info(f"New episode cached: {ep_name} (ID: {message.id})")
+            logging.info(f"Episode cached: {ep_name} (IDs: {episode_cache[ep_name]})")
 
 # ------------------------ COMMANDS ------------------------
 @bot.on_message(filters.private & filters.command("start"))
@@ -232,3 +243,4 @@ async def handle_episode_button(client, callback_query):
 if __name__ == "__main__":
     logging.info("Bot started. Listening for new episodes...")
     bot.run()
+
